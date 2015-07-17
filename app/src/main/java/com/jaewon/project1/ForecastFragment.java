@@ -1,9 +1,13 @@
 package com.jaewon.project1;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,17 +34,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.List;
+import com.jaewon.project1.myRecycleAdapter;
 /**
  * Created by won on 2015-07-10.
  */
 public class ForecastFragment extends Fragment {
 
+    List<ForecastItem> forecastItemList = new ArrayList<ForecastItem>();
     private  ArrayAdapter<String> mForecastAdapter;
-
+    RecyclerView recyclerView;
     public ForecastFragment() {
 
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +74,7 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
-        ArrayList<String> weekForecast = new ArrayList<String>();
+        /*ArrayList<String> weekForecast = new ArrayList<String>();
 
         weekForecast.add("Today - Sunny - 88 / 63");
         weekForecast.add("Tommorrow - Foggy - 70 / 46");
@@ -73,14 +82,27 @@ public class ForecastFragment extends Fragment {
         weekForecast.add("Thurs - Rainy - 64 / 51");
         weekForecast.add("Fri - Foggy - 70 / 46");
         weekForecast.add("Sat - Sunny - 76 / 68");
-
-        mForecastAdapter =  new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,weekForecast);
+        */
+       /* mForecastAdapter =  new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,weekForecast);*/
 
         View rootView = inflater.inflate(R.layout.fragment_main,container, false);
 
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        /*ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
+*/
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.myRecyclerView);
 
+
+        for(int i = 0; i< 30; i++) {
+            ForecastItem item = new ForecastItem();
+            item.setImg(R.mipmap.ic_launcher);
+            item.setText("banana " + i);
+            forecastItemList.add(item);
+        }
+        recyclerView.setAdapter(new myRecycleAdapter(forecastItemList,R.layout.list_item_forecast));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        //mForecastAdapter = new myRecycleAdapter(header_data_arr,itemdata, getActivity());
 
         return rootView;
     }
@@ -93,15 +115,16 @@ public class ForecastFragment extends Fragment {
             return shortenedDeateFormat.format(time);
         }
 
-        private  String formatHighLows(double high, double low) {
+        private String formatHighLows(double high, double low) {
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 
             String highLowstr = roundedHigh + "/" + roundedLow;
             return highLowstr;
         }
-        private String [] getWeatherDataFromJson(String forecastJsonStr, int numDays)
-            throws JSONException {
+
+        private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+                throws JSONException {
             final String OWM_LIST = "list";
             final String OWM_WEATHER = "weather";
             final String OWM_TEMPERATURE = "temp";
@@ -115,12 +138,12 @@ public class ForecastFragment extends Fragment {
             Time dayTime = new Time();
             dayTime.setToNow();
 
-            int julianStartDay = Time.getJulianDay(System.currentTimeMillis(),dayTime.gmtoff);
+            int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
 
             dayTime = new Time();
 
-            String [] resultStrs = new String[numDays];
-            for (int i = 0; i< weatherArray.length();i++) {
+            String[] resultStrs = new String[numDays];
+            for (int i = 0; i < weatherArray.length(); i++) {
                 String day;
                 String description;
                 String highAndLow;
@@ -141,18 +164,19 @@ public class ForecastFragment extends Fragment {
 
                 highAndLow = formatHighLows(high, low);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
-             }
+            }
 
-            for(String s : resultStrs) {
-                Log.v(LOG_TAG,"Foreast entry : "+ s);
+            for (String s : resultStrs) {
+                Log.v(LOG_TAG, "Foreast entry : " + s);
             }
             return resultStrs;
 
         }
+
         @Override
         protected String[] doInBackground(String... params) {
 
-            if(params.length == 0) {
+            if (params.length == 0) {
                 return null;
             }
             HttpURLConnection urlConnection = null;
@@ -173,11 +197,11 @@ public class ForecastFragment extends Fragment {
                 final String DAYS_PARAM = "cnt";
 
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                                         .appendQueryParameter(QUERY_PARAM, params[0])
-                                         .appendQueryParameter(FORMAT_PARAM, format)
-                                         .appendQueryParameter(UNITS_PARAM, units)
-                                         .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
-                                         .build();
+                        .appendQueryParameter(QUERY_PARAM, params[0])
+                        .appendQueryParameter(FORMAT_PARAM, format)
+                        .appendQueryParameter(UNITS_PARAM, units)
+                        .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
+                        .build();
 
 
                 URL url = new URL(builtUri.toString());
@@ -210,8 +234,7 @@ public class ForecastFragment extends Fragment {
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 return null;
-            }
-            finally {
+            } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
@@ -225,9 +248,9 @@ public class ForecastFragment extends Fragment {
             }
 
             try {
-                return getWeatherDataFromJson(forecastJsonStr,numDays);
+                return getWeatherDataFromJson(forecastJsonStr, numDays);
             } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(),e);
+                Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
             }
             return null;
@@ -236,11 +259,24 @@ public class ForecastFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] result) {
-            if(result != null) {
-                mForecastAdapter.clear();
-                for(String dayForecastStr : result) {
-                    mForecastAdapter.add(dayForecastStr);
+            if (result != null) {
+                //mForecastAdapter.clear();
+                forecastItemList.clear();
+                for(int i= 0; i< result.length; i++) {
+
+                    ForecastItem item = new ForecastItem();
+                    item.setImg(R.mipmap.ic_launcher);
+                    item.setText(result[i]);
+                    forecastItemList.add(item);
                 }
+                recyclerView.setAdapter(new myRecycleAdapter(forecastItemList,R.layout.list_item_forecast));
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+                /*
+                for (String dayForecastStr : result) {
+                    mForecastAdapter.add(dayForecastStr);
+                }*/
             }
         }
     }
