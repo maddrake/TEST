@@ -1,6 +1,4 @@
 package com.jaewon.project1;
-
-import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,9 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,12 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import com.jaewon.project1.myRecycleAdapter;
 /**
  * Created by won on 2015-07-10.
  */
@@ -44,10 +38,9 @@ public class ForecastFragment extends Fragment {
     List<ForecastItem> forecastItemList = new ArrayList<ForecastItem>();
     private  ArrayAdapter<String> mForecastAdapter;
     RecyclerView recyclerView;
+    RecyclerItemClickListener recyclerItemClickListener;
     public ForecastFragment() {
-
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,18 +84,31 @@ public class ForecastFragment extends Fragment {
         listView.setAdapter(mForecastAdapter);
 */
         recyclerView = (RecyclerView) rootView.findViewById(R.id.myRecyclerView);
-
-
         for(int i = 0; i< 30; i++) {
             ForecastItem item = new ForecastItem();
             item.setImg(R.mipmap.ic_launcher);
-            item.setText("banana " + i);
+            item.setText("Hello, Hello, Hello! " + i);
             forecastItemList.add(item);
         }
-        recyclerView.setAdapter(new myRecycleAdapter(forecastItemList,R.layout.list_item_forecast));
+        recyclerView.setAdapter(new myRecycleAdapter(forecastItemList, R.layout.list_item_forecast));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //mForecastAdapter = new myRecycleAdapter(header_data_arr,itemdata, getActivity());
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(View view, int position)
+            {
+                Toast.makeText(getActivity().getApplicationContext(),"HELLO!",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position)
+            {
+                Toast.makeText(getActivity().getApplicationContext(),"HELLO~~~~~!",Toast.LENGTH_SHORT).show();
+
+            }
+        }));
 
         return rootView;
     }
@@ -263,7 +269,6 @@ public class ForecastFragment extends Fragment {
                 //mForecastAdapter.clear();
                 forecastItemList.clear();
                 for(int i= 0; i< result.length; i++) {
-
                     ForecastItem item = new ForecastItem();
                     item.setImg(R.mipmap.ic_launcher);
                     item.setText(result[i]);

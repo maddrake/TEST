@@ -1,14 +1,12 @@
 package com.jaewon.project1;
 
+import android.media.MediaRecorder;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.jaewon.project1.ForecastItem;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +17,7 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
     private List<ForecastItem> forecastItem;
     private int itemLayout;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView img;
         public TextView forecast_text;
@@ -29,7 +27,6 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
 
             img = (ImageView) itemView.findViewById(R.id.imgView);
             forecast_text = (TextView) itemView.findViewById(R.id.list_item_forecast_textview);
-
         }
     }
 
@@ -51,13 +48,10 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
         holder.forecast_text.setText(item.getText());
         holder.img.setBackgroundResource(item.getImg());
         holder.itemView.setTag(item);
-
     }
-
     @Override
     public int getItemCount() {
     return forecastItem.size();
     }
-
 }
 
