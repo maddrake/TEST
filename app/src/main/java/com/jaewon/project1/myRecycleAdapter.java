@@ -1,6 +1,7 @@
 package com.jaewon.project1;
 
 import android.media.MediaRecorder;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,10 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
         holder.forecast_text.setText(item.getText());
         holder.img.setBackgroundResource(item.getImg());
         holder.itemView.setTag(item);
+    }
+
+    public ForecastItem getItem(int position) {
+        return forecastItem.get(position);
     }
     @Override
     public int getItemCount() {

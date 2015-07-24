@@ -1,5 +1,6 @@
 package com.jaewon.project1;
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,8 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
-
+import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,10 +37,13 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
 
+    View rootView;
     List<ForecastItem> forecastItemList = new ArrayList<ForecastItem>();
-    private  ArrayAdapter<String> mForecastAdapter;
+    //private  ArrayAdapter<String> mForecastAdapter;
     RecyclerView recyclerView;
     RecyclerItemClickListener recyclerItemClickListener;
+    ImageView imgview1;
+
     public ForecastFragment() {
     }
 
@@ -50,7 +55,7 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.forecastfragment,menu);
+        inflater.inflate(R.menu.forecastfragment, menu);
     }
 
     @Override
@@ -67,45 +72,32 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
-        /*ArrayList<String> weekForecast = new ArrayList<String>();
 
-        weekForecast.add("Today - Sunny - 88 / 63");
-        weekForecast.add("Tommorrow - Foggy - 70 / 46");
-        weekForecast.add("Weds - cloudy - 72 / 63");
-        weekForecast.add("Thurs - Rainy - 64 / 51");
-        weekForecast.add("Fri - Foggy - 70 / 46");
-        weekForecast.add("Sat - Sunny - 76 / 68");
-        */
-       /* mForecastAdapter =  new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,weekForecast);*/
+        rootView = inflater.inflate(R.layout.fragment_main,container, false);
 
-        View rootView = inflater.inflate(R.layout.fragment_main,container, false);
-
-        /*ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
-*/
         recyclerView = (RecyclerView) rootView.findViewById(R.id.myRecyclerView);
+
         for(int i = 0; i< 30; i++) {
             ForecastItem item = new ForecastItem();
             item.setImg(R.mipmap.ic_launcher);
             item.setText("Hello, Hello, Hello! " + i);
             forecastItemList.add(item);
         }
+        final myRecycleAdapter myrecycleadapter = new myRecycleAdapter(forecastItemList, 7);
+        imgview1 = (ImageView) rootView.findViewById(R.id.imgView);
         recyclerView.setAdapter(new myRecycleAdapter(forecastItemList, R.layout.list_item_forecast));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        //mForecastAdapter = new myRecycleAdapter(header_data_arr,itemdata, getActivity());
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener()
-        {
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position)
-            {
-                Toast.makeText(getActivity().getApplicationContext(),"HELLO!",Toast.LENGTH_SHORT).show();
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, forecastItemList.get(position).getText());
+                startActivity(intent);
             }
 
             @Override
-            public void onItemLongClick(View view, int position)
-            {
-                Toast.makeText(getActivity().getApplicationContext(),"HELLO~~~~~!",Toast.LENGTH_SHORT).show();
+            public void onItemLongClick(View view, int position) {
+                Toast.makeText(getActivity().getApplicationContext(), "Long Click~~!", Toast.LENGTH_SHORT).show();
 
             }
         }));
@@ -114,11 +106,12 @@ public class ForecastFragment extends Fragment {
     }
     public class FetchWeatherTast extends AsyncTask<String, Void, String[]> {
 
+        private String description;
         private final String LOG_TAG = FetchWeatherTast.class.getSimpleName();
 
         private String getReadableDateString(long time) {
-            SimpleDateFormat shortenedDeateFormat = new SimpleDateFormat("EEE MMM dd");
-            return shortenedDeateFormat.format(time);
+            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
+            return shortenedDateFormat.format(time);
         }
 
         private String formatHighLows(double high, double low) {
@@ -151,7 +144,6 @@ public class ForecastFragment extends Fragment {
             String[] resultStrs = new String[numDays];
             for (int i = 0; i < weatherArray.length(); i++) {
                 String day;
-                String description;
                 String highAndLow;
 
                 JSONObject dayForecast = weatherArray.getJSONObject(i);
@@ -270,7 +262,16 @@ public class ForecastFragment extends Fragment {
                 forecastItemList.clear();
                 for(int i= 0; i< result.length; i++) {
                     ForecastItem item = new ForecastItem();
-                    item.setImg(R.mipmap.ic_launcher);
+                    switch (description) {
+                        case "Rain" :
+                            item.setImg(R.drawable.d);
+                            break;
+                        case "Clouds" :
+                            item.setImg(R.drawable.b);
+                            break;
+                        default:
+                                break;
+                    }
                     item.setText(result[i]);
                     forecastItemList.add(item);
                 }
@@ -278,10 +279,6 @@ public class ForecastFragment extends Fragment {
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-                /*
-                for (String dayForecastStr : result) {
-                    mForecastAdapter.add(dayForecastStr);
-                }*/
             }
         }
     }
