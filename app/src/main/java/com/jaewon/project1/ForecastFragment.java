@@ -1,9 +1,11 @@
 package com.jaewon.project1;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,7 +45,7 @@ public class ForecastFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerItemClickListener recyclerItemClickListener;
     ImageView imgview1;
-
+    private String unitType;
     public ForecastFragment() {
     }
 
@@ -62,11 +64,26 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_refresh) {
-            FetchWeatherTast weatherTast = new FetchWeatherTast();
-            weatherTast.execute("Bucheon");
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void updateWeather() {
+
+        FetchWeatherTast weatherTast = new FetchWeatherTast();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        unitType = prefs.getString(getString(R.string.pref_units_key),
+                getString(R.string.pref_units_metric));
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        weatherTast.execute(location);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
     }
 
     @Override
@@ -77,12 +94,6 @@ public class ForecastFragment extends Fragment {
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.myRecyclerView);
 
-        for(int i = 0; i< 30; i++) {
-            ForecastItem item = new ForecastItem();
-            item.setImg(R.mipmap.ic_launcher);
-            item.setText("Hello, Hello, Hello! " + i);
-            forecastItemList.add(item);
-        }
         final myRecycleAdapter myrecycleadapter = new myRecycleAdapter(forecastItemList, 7);
         imgview1 = (ImageView) rootView.findViewById(R.id.imgView);
         recyclerView.setAdapter(new myRecycleAdapter(forecastItemList, R.layout.list_item_forecast));
@@ -114,7 +125,13 @@ public class ForecastFragment extends Fragment {
             return shortenedDateFormat.format(time);
         }
 
-        private String formatHighLows(double high, double low) {
+        private String formatHighLows(double high, double low, String unitType) {
+            if(unitType.equals(getString(R.string.pref_units_imperial))) {
+                high = (high * 1.8) + 32;
+                low = (low * 1.8) + 32;
+            } else if ( !unitType.equals(getString(R.string.pref_units_metric))) {
+                Log.d(LOG_TAG,"Unit type not found : " + unitType);
+            }
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 
@@ -160,7 +177,7 @@ public class ForecastFragment extends Fragment {
                 double high = temperatureObjet.getDouble(OWM_MAX);
                 double low = temperatureObjet.getDouble(OWM_MIN);
 
-                highAndLow = formatHighLows(high, low);
+                highAndLow = formatHighLows(high, low, unitType);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
