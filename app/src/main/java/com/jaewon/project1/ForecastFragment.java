@@ -39,6 +39,8 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
 
+    private static String LOG = ForecastFragment.class.getSimpleName();
+    private static Boolean DEBUG = true;
     View rootView;
     List<ForecastItem> forecastItemList = new ArrayList<ForecastItem>();
     //private  ArrayAdapter<String> mForecastAdapter;
@@ -53,6 +55,7 @@ public class ForecastFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        Util.getInstance().printLog(DEBUG,LOG, "OnCreate!");
     }
 
     @Override
@@ -285,6 +288,18 @@ public class ForecastFragment extends Fragment {
                             break;
                         case "Clouds" :
                             item.setImg(R.drawable.b);
+                            break;
+                        case "snow" :
+                            item.setImg(R.drawable.i);
+                            break;
+                        case "Thunderstorm" :
+                            item.setImg(R.drawable.j);
+                            break;
+                        case "mist" :
+                            item.setImg(R.drawable.a);
+                            break;
+                        case "scatter clouds" :
+                            item.setImg(R.drawable.h);
                             break;
                         default:
                                 break;
