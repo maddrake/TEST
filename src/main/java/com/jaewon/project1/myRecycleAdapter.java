@@ -29,7 +29,7 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
             forecast_text = (TextView) itemView.findViewById(R.id.list_item_forecast_textview);
         }
     }
-    public void add(ArrayList list, ForecastItem Item, String forecast_Text, ArrayList<String> description,int position) {
+    public void additems(ArrayList list, ForecastItem Item, String forecast_Text, ArrayList<String> description,int position) {
 
         String data = description.get(position);
 
@@ -74,8 +74,8 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
     }
 
     public ForecastItem getItem(ArrayList<ForecastItem> forecastItem, int position) {
-        ForecastItem s = forecastItem.get(position);
-        return s;
+        ForecastItem forecastItem1 = forecastItem.get(position);
+        return forecastItem1;
     }
     @Override
     public int getItemCount() {
