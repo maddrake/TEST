@@ -13,10 +13,6 @@ import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-/**
- * Created by won on 2015-07-10.
- */
-
 public class ForecastFragment extends Fragment {
 
     private  PagerSlidingTabStrip tabs;

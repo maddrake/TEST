@@ -12,9 +12,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by won on 2015-07-17.
- */
 public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.ViewHolder> {
 
     private List<ForecastItem> forecastItem;
