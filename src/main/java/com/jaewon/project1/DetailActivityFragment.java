@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import static android.support.v4.view.MenuItemCompat.*;
+import static android.support.v4.view.MenuItemCompat.getActionProvider;
 
 
 /**
