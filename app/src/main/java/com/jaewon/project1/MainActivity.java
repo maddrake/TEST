@@ -15,6 +15,7 @@ public class MainActivity extends FragmentActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +68,6 @@ public class MainActivity extends FragmentActivity {
         } else {
             Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
         }
-
-
     }
 
 

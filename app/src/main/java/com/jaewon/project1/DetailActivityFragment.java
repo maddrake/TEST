@@ -1,7 +1,9 @@
 package com.jaewon.project1;
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
@@ -13,12 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import static android.support.v4.view.MenuItemCompat.*;
+import static android.support.v4.view.MenuItemCompat.getActionProvider;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DetailActivityFragment extends Fragment {
 
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
