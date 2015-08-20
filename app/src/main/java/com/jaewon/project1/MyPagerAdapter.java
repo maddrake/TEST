@@ -8,9 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-/**
- * Created by SeungHyo on 2015-08-11.
- */
 public class MyPagerAdapter extends FragmentPagerAdapter {
 
     private final String[] TITLES = {"Seoul", "Incheon", "Bucheon", "New York"};
