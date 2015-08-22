@@ -20,13 +20,21 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
         this.itemLayout = itemLayout;
     }
 
-    public void additems(ArrayList list, ForecastItem Item, String forecast_Text, ArrayList<String> description,int position) {
+    public void additems(ArrayList list, ForecastItem Item, String forecast_Text,
+                         ArrayList<String> description,ArrayList<String> date,
+                         ArrayList<String> highTemp, ArrayList<String> lowTemp, int position) {
 
-        String data = description.get(position);
+        String weatherText= description.get(position);
+        String dateText = date.get(position);
+        String high_temp = highTemp.get(position);
+        String low_temp = lowTemp.get(position);
 
-        Item.setText(forecast_Text);
+        Item.setText_forecast_date(dateText);
+        Item.setText_forecast_temp(weatherText);
+        Item.setText_forecast_high_temp(high_temp);
+        Item.setText_forecast_low_temp(low_temp);
 
-        switch (data) {
+        switch (weatherText) {
             case "thunderstorm" :
                 Item.setImg(R.drawable.j);
                 break;
@@ -35,6 +43,9 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
                 break;
             case "Clouds" :
                 Item.setImg(R.drawable.h);
+                break;
+            case "Clear" :
+                Item.setImg(R.drawable.c);
                 break;
             default:
                 Item.setImg(R.mipmap.ic_launcher);
@@ -53,7 +64,11 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
     @Override
     public void onBindViewHolder(myRecycleAdapter.ViewHolder holder, int position) {
         ForecastItem item = forecastItem.get(position);
-        holder.forecast_text.setText(item.getText());
+        holder.forecast_text.setText(item.getText_forecast_date());
+        holder.forecast_text2.setText(item.getText_forecast_temp());
+        holder.forecast_text3.setText(item.getText_forecast_high_temp());
+        holder.forecast_text4.setText(item.getText_forecast_low_temp());
+
         holder.img.setBackgroundResource(item.getImg());
         holder.itemView.setTag(item);
     }
@@ -72,12 +87,18 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
 
         public ImageView img;
         public TextView forecast_text;
+        public TextView forecast_text2;
+        public TextView forecast_text3;
+        public TextView forecast_text4;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             img = (ImageView) itemView.findViewById(R.id.imgView);
             forecast_text = (TextView) itemView.findViewById(R.id.list_item_forecast_textview);
+            forecast_text2 = (TextView) itemView.findViewById(R.id.list_item_date_textview);
+            forecast_text3 = (TextView) itemView.findViewById(R.id.list_item_high_textview);
+            forecast_text4 = (TextView) itemView.findViewById(R.id.list_item_low_textview);
         }
     }
 }

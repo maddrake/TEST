@@ -40,7 +40,6 @@ import java.util.ArrayList;
 
 public class SuperAwesomeCardFragment extends Fragment {
 
-
     private static final String ARG_POSITION = "position";
     private static String location;
     ArrayList<ForecastItem> forecastItem = new ArrayList<ForecastItem>();
@@ -81,8 +80,8 @@ public class SuperAwesomeCardFragment extends Fragment {
         final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
                 .getDisplayMetrics());
 
-
         recyclerView = new RecyclerView(getActivity());
+
         adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager());
         params.setMargins(margin, margin, margin, margin);
 
@@ -109,14 +108,17 @@ public class SuperAwesomeCardFragment extends Fragment {
 
         for(int i = 0 ; i < 7; i++) {
             item = new ForecastItem();
-            item.setText("Test" + i);
+            item.setText_forecast_date("date");
+            item.setText_forecast_temp("temp");
             item.setImg(R.mipmap.ic_launcher);
             forecastItem.add(item);
         }
         mAdapter = new myRecycleAdapter(forecastItem,R.layout.list_item_forecast);
+
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
     }
 
     private void updateWeatherb(String i) {
@@ -140,6 +142,10 @@ public class SuperAwesomeCardFragment extends Fragment {
 
         private final String LOG_TAG = FetchweatherTask.class.getSimpleName();
         private ArrayList<String> str_weather = new ArrayList<>();
+        private ArrayList<String> str_date = new ArrayList<>();
+        private ArrayList<String> str_high_temp = new ArrayList<>();
+        private ArrayList<String> str_low_temp = new ArrayList<>();
+
 
         private String getReadableDateString(long time) {
             SimpleDateFormat shortenedDeateFormat = new SimpleDateFormat("EEE MMM dd");
@@ -151,12 +157,18 @@ public class SuperAwesomeCardFragment extends Fragment {
             if (unitType.equals(getString(R.string.pref_units_imperial))) {
                 high = (high * 1.8) + 32;
                 low = (low * 1.8) + 32;
+
             } else if (!unitType.equals(getString(R.string.pref_units_metric))) {
                 Log.d(LOG_TAG, "Unit type not found : " + unitType);
             }
 
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
+
+            String highText = roundedHigh + "";
+            String lowText = roundedLow + "";
+            str_high_temp.add(highText);
+            str_low_temp.add(lowText);
 
             String highLowstr = roundedHigh + "/" + roundedLow;
             return highLowstr;
@@ -211,6 +223,7 @@ public class SuperAwesomeCardFragment extends Fragment {
                 highAndLow = formatHighLows(high, low, unitType);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
                 str_weather.add(description);
+                str_date.add(day);
             }
 
             for (String s : resultStrs) {
@@ -321,7 +334,7 @@ public class SuperAwesomeCardFragment extends Fragment {
                 forecastItem.clear();
                 for (int i = 0; result.length > i; i++) {
                     item = new ForecastItem();
-                    mAdapter.additems(forecastItem, item, result[i], str_weather, i);
+                    mAdapter.additems(forecastItem, item, result[i], str_weather, str_date, str_high_temp,str_low_temp, i);
                 }
                 recyclerView.setAdapter(mAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

@@ -13,7 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class MyPagerAdapter extends FragmentPagerAdapter {
 
-    private final String[] TITLES = {"Seoul", "Incheon", "Bucheon", "New York"};
+    private final String[] TITLES = {"Seoul", "Incheon", "Busan", "New York"};
 
     public MyPagerAdapter(FragmentManager fm) {
         super(fm);
