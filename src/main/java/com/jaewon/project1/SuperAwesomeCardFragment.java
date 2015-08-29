@@ -43,9 +43,13 @@ public class SuperAwesomeCardFragment extends Fragment {
     private static final String ARG_POSITION = "position";
     private static String location;
     ArrayList<ForecastItem> forecastItem = new ArrayList<ForecastItem>();
+    ArrayList<ForecastItem> forecastItem2 = new ArrayList<ForecastItem>();
     ForecastItem item;
+    ForecastItem item2;
     private RecyclerView recyclerView;
+    private RecyclerView recyclerView2;
     private myRecycleAdapter mAdapter;
+    private MyTodayRecyclerAdapter mAdapter2;
     private MyPagerAdapter adapter;
     private int position;
 
@@ -76,21 +80,27 @@ public class SuperAwesomeCardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
                 .getDisplayMetrics());
 
+       LayoutParams params2 = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,150);
+        final int margin1 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
+                .getDisplayMetrics());
+
         recyclerView = new RecyclerView(getActivity());
+        recyclerView2 = new RecyclerView(getActivity());
 
         adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager());
         params.setMargins(margin, margin, margin, margin);
+      // params2.setMargins(margin, 250, margin, margin);
 
         initData();
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemclickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        ForecastItem forecast = mAdapter.getItem(forecastItem ,position);
+                        ForecastItem forecast = mAdapter.getItem(forecastItem, position);
                         Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, forecast.getText());
                         startActivity(intent);
                     }
@@ -99,7 +109,13 @@ public class SuperAwesomeCardFragment extends Fragment {
 
         FrameLayout fl = new FrameLayout(getActivity());
         fl.setLayoutParams(params);
-        fl.addView(recyclerView);
+        fl.addView(recyclerView2,LayoutParams.MATCH_PARENT,150);
+       fl.addView(recyclerView,params2);
+       /* FrameLayout fl2 = new FrameLayout(getActivity());
+        fl2.setLayoutParams(params2);
+        fl2.addView(recyclerView);
+        */
+
         updateWeatherb(adapter.returnString(position));
         return fl;
     }
@@ -113,11 +129,22 @@ public class SuperAwesomeCardFragment extends Fragment {
             item.setImg(R.mipmap.ic_launcher);
             forecastItem.add(item);
         }
+
+        item2 = new ForecastItem();
+        item2.setText_forecast_date("date");
+        item2.setText_forecast_temp("temp");
+        item2.setImg(R.mipmap.ic_launcher);
+        forecastItem2.add(item2);
+
         mAdapter = new myRecycleAdapter(forecastItem,R.layout.list_item_forecast);
+        mAdapter2 = new MyTodayRecyclerAdapter(forecastItem2,R.layout.list_item_forecast_today);
 
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView2.setAdapter(mAdapter2);
+        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView2.setItemAnimator(new DefaultItemAnimator());
 
     }
 
@@ -336,9 +363,15 @@ public class SuperAwesomeCardFragment extends Fragment {
                     item = new ForecastItem();
                     mAdapter.additems(forecastItem, item, result[i], str_weather, str_date, str_high_temp,str_low_temp, i);
                 }
+                item2 = new ForecastItem();
+                mAdapter2.additems(forecastItem2, item2, result[0], str_weather, str_date, str_high_temp,str_low_temp, 0);
+
                 recyclerView.setAdapter(mAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView2.setAdapter(mAdapter2);
+                recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recyclerView2.setItemAnimator(new DefaultItemAnimator());
             }
         }
     }

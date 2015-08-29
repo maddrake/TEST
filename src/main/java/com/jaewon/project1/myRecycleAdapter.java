@@ -99,6 +99,7 @@ public class myRecycleAdapter extends RecyclerView.Adapter<myRecycleAdapter.View
             forecast_text2 = (TextView) itemView.findViewById(R.id.list_item_date_textview);
             forecast_text3 = (TextView) itemView.findViewById(R.id.list_item_high_textview);
             forecast_text4 = (TextView) itemView.findViewById(R.id.list_item_low_textview);
+
         }
     }
 }
